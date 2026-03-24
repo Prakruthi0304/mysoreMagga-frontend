@@ -115,7 +115,7 @@ const Footer = () => {
         <div className="divider-gold mt-12 mb-6 opacity-30" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-white/40 text-xs font-inter">
-          <p>© 2024 ಮೈಸೂರುಮಗ್ಗ. All rights reserved. Made with ❤ for Mysore's weavers.</p>
+          <p>© 2026 ಮೈಸೂರುಮಗ್ಗ. All rights reserved. Made with ❤ for Mysore's weavers.</p>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:text-gold transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-gold transition-colors">Terms of Use</Link>

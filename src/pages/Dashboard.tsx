@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, Loader, ShoppingBag, Leaf, Scissors, Bell, CheckCheck, Package } from "lucide-react";
+import { Plus, Loader, ShoppingBag, Leaf, Scissors, Bell, CheckCheck, Package, Video } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
@@ -9,6 +9,53 @@ import { toast } from "sonner";
 import { Link } from "react-router-dom";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+const WeavingVideoSection = () => {
+  const { user, updateUser } = useAuth();
+  const [videoUrl, setVideoUrl] = useState(user?.weavingVideoUrl || "");
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await updateUser({ weavingVideoUrl: videoUrl } as any);
+      toast.success("Weaving video URL saved!");
+    } catch {
+      toast.error("Failed to save video URL");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-2xl p-6 shadow-card">
+      <div className="flex items-center gap-2 mb-4">
+        <Video size={20} className="text-gold" />
+        <h2 className="font-playfair text-xl font-bold text-maroon">My Weaving Video</h2>
+      </div>
+      <p className="font-inter text-sm text-muted-foreground mb-4">
+        Add your YouTube video showing your weaving process. This will be displayed on your public profile so customers can see your craft!
+      </p>
+      <div className="flex gap-3">
+        <input
+          type="text"
+          value={videoUrl}
+          onChange={(e) => setVideoUrl(e.target.value)}
+          placeholder="e.g. https://www.youtube.com/watch?v=..."
+          className="flex-1 border border-border rounded-xl px-4 py-3 font-inter text-sm focus:outline-none focus:border-gold"
+        />
+        <button onClick={handleSave} disabled={saving}
+          className="px-6 py-3 bg-maroon text-gold font-inter font-semibold rounded-xl hover:bg-gold hover:text-maroon transition-all disabled:opacity-60 flex items-center gap-2">
+          {saving ? <Loader size={14} className="animate-spin" /> : null}
+          Save
+        </button>
+      </div>
+      {videoUrl && (
+        <p className="font-inter text-xs text-emerald-600 mt-2">✓ Video URL saved — visible on your public profile</p>
+      )}
+    </div>
+  );
+};
 
 const WeaverListingForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [form, setForm] = useState({ name: "", price: "", description: "", color: "", fabric: "Pure Silk", occasion: "Casual", image: "", stockCount: "1" });
@@ -391,6 +438,9 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
+
+            {/* Weaving Video URL */}
+            <WeavingVideoSection />
 
             <WeaverListingForm onSuccess={() => setRefresh(r => r + 1)} />
 

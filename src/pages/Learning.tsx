@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { BookOpen, Play, Clock, ChevronDown, ChevronUp } from "lucide-react";
+import { BookOpen, Clock, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import artisanWeavingImg from "@/assets/artisan-weaving.jpg";
 
 const steps = [
   { step: "1", title: "Silk Thread Preparation", desc: "Raw silk is sourced from silkworms reared in Mysore's mulberry farms. The cocoons are boiled to unwind the silk filaments, which are then degummed and twisted." },
@@ -17,12 +16,12 @@ const steps = [
 ];
 
 const articles = [
-  { title: "The History of Mysore Silk", read: "8 min", category: "History", desc: "Tracing the origins of Mysore silk from the 1912 royal initiative to a global heritage craft." },
-  { title: "Understanding Gold Zari Work", read: "5 min", category: "Craft", desc: "How pure gold is transformed into delicate threads that adorn the world's finest sarees." },
-  { title: "Hoysala Temple Motifs in Silk", read: "6 min", category: "Art", desc: "The architectural masterpieces of Karnataka reimagined as woven motifs in temple border silks." },
-  { title: "Caring for Your Mysore Silk", read: "3 min", category: "Guide", desc: "Expert tips to preserve the luster and longevity of your precious silk heirlooms." },
-  { title: "The GI Tag & Why It Matters", read: "4 min", category: "Commerce", desc: "Understanding the Geographical Indication tag that protects authentic Mysore silk." },
-  { title: "Artisan Communities of Mandya", read: "7 min", category: "Culture", desc: "A deep dive into the weaving communities of Mandya district and their generations of expertise." },
+  { title: "The History of Mysore Silk", read: "8 min", category: "History", desc: "Tracing the origins of Mysore silk from the 1912 royal initiative to a global heritage craft.", url: "https://en.wikipedia.org/wiki/Mysore_silk" },
+  { title: "Understanding Gold Zari Work", read: "5 min", category: "Craft", desc: "How pure gold is transformed into delicate threads that adorn the world's finest sarees.", url: "https://en.wikipedia.org/wiki/Zari" },
+  { title: "Hoysala Temple Motifs in Silk", read: "6 min", category: "Art", desc: "The architectural masterpieces of Karnataka reimagined as woven motifs in temple border silks.", url: "https://en.wikipedia.org/wiki/Hoysala_architecture" },
+  { title: "Caring for Your Mysore Silk", read: "3 min", category: "Guide", desc: "Expert tips to preserve the luster and longevity of your precious silk heirlooms.", url: "https://www.taneira.com/blog/how-to-care-for-silk-sarees" },
+  { title: "The GI Tag & Why It Matters", read: "4 min", category: "Commerce", desc: "Understanding the Geographical Indication tag that protects authentic Mysore silk.", url: "https://ipindia.gov.in/gi.htm" },
+  { title: "Artisan Communities of Mandya", read: "7 min", category: "Culture", desc: "A deep dive into the weaving communities of Mandya district and their generations of expertise.", url: "https://en.wikipedia.org/wiki/Mandya_district" },
 ];
 
 const Learning = () => {
@@ -46,17 +45,22 @@ const Learning = () => {
         </div>
 
         <div className="container mx-auto px-4 py-16">
-          {/* Video placeholder */}
+
+          {/* Local Video Player */}
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="relative mb-16 rounded-3xl overflow-hidden shadow-luxury">
-            <img src={artisanWeavingImg} alt="Silk weaving" className="w-full h-[420px] object-cover" />
-            <div className="absolute inset-0 bg-maroon/60 flex items-center justify-center">
-              <button className="w-20 h-20 rounded-full bg-gold flex items-center justify-center shadow-gold-lg hover:bg-gold-light transition-colors animate-gold-pulse">
-                <Play size={28} className="text-maroon fill-maroon ml-1" />
-              </button>
-            </div>
-            <div className="absolute bottom-6 left-6">
-              <p className="font-playfair text-white text-2xl font-bold">The Art of Mysore Silk Weaving</p>
-              <p className="font-inter text-white/70 text-sm mt-1">Documentary · 24 minutes</p>
+            <video
+              className="w-full rounded-3xl"
+              controls
+              autoPlay
+              muted
+              style={{ maxHeight: "500px", objectFit: "cover" }}
+            >
+              <source src="/silk-video.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div className="bg-maroon px-6 py-4">
+              <p className="font-playfair text-gold text-xl font-bold">The Art of Mysore Silk Weaving</p>
+              <p className="font-inter text-white/70 text-sm mt-1">🎬 Our Documentary</p>
             </div>
           </motion.div>
 
@@ -67,7 +71,8 @@ const Learning = () => {
               <h2 className="font-playfair text-3xl font-bold text-maroon">The History of Mysore Silk</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[["1912", "Royal Initiative", "Maharaja Krishnaraja Wadiyar IV established the first silk weaving factory in Mysore, making Karnataka the center of Indian silk."],
+              {[
+                ["1912", "Royal Initiative", "Maharaja Krishnaraja Wadiyar IV established the first silk weaving factory in Mysore, making Karnataka the center of Indian silk."],
                 ["1930s", "Handloom Revolution", "Mysore silk went from factory to handloom, creating thousands of artisan jobs and establishing unique weaving traditions."],
                 ["2005", "GI Tag Recognition", "Mysore Silk received the Geographical Indication tag, officially recognizing it as an authentic product of Karnataka's heritage."]
               ].map(([year, title, text]) => (
@@ -115,19 +120,32 @@ const Learning = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {articles.map((article, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                  className="bg-white rounded-2xl p-6 shadow-card hover:shadow-hover transition-all duration-300 group cursor-pointer">
+                <motion.a
+                  href={article.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white rounded-2xl p-6 shadow-card hover:shadow-hover transition-all duration-300 group cursor-pointer block"
+                >
                   <span className="inline-block bg-gold/10 text-gold text-xs font-inter font-medium px-3 py-1 rounded-full mb-3">{article.category}</span>
-                  <h3 className="font-playfair text-maroon font-bold text-lg mb-2 group-hover:text-gold transition-colors">{article.title}</h3>
+                  <h3 className="font-playfair text-maroon font-bold text-lg mb-2 group-hover:text-gold transition-colors flex items-start gap-2">
+                    {article.title}
+                    <ExternalLink size={14} className="shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
                   <p className="font-inter text-muted-foreground text-sm leading-relaxed mb-4">{article.desc}</p>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock size={12} />
                     <span className="font-inter text-xs">{article.read} read</span>
                   </div>
-                </motion.div>
+                </motion.a>
               ))}
             </div>
           </motion.div>
+
         </div>
       </div>
       <Footer />

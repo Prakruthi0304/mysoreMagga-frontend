@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, Truck, RefreshCw, Award } from "lucide-react";
+import { ArrowRight, Shield, Truck, RefreshCw, Award, Scissors } from "lucide-react";
 import { artisans } from "@/data/sarees";
 import artisanWeavingImg from "@/assets/artisan-weaving.jpg";
 import heritageImg from "@/assets/heritage-bg.jpg";
@@ -11,7 +11,6 @@ const HeritageStory = () => {
     <section className="section-py bg-white overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Images */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -25,12 +24,10 @@ const HeritageStory = () => {
             <div className="absolute -bottom-8 -right-8 w-56 h-56 img-zoom rounded-xl overflow-hidden shadow-gold z-20 border-4 border-white">
               <img src={sareeCloseupImg} alt="Silk saree close-up" className="w-full h-full object-cover" />
             </div>
-            {/* Decorative */}
             <div className="absolute -top-6 -left-6 w-32 h-32 bg-gold/10 rounded-full" />
             <div className="absolute top-1/2 -left-3 w-4 h-40 gradient-gold rounded-full opacity-60" />
           </motion.div>
 
-          {/* Text */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -45,16 +42,15 @@ const HeritageStory = () => {
               Centuries of Silk,<br />Woven with Love
             </h2>
             <p className="font-inter text-muted-foreground text-base leading-relaxed mb-6">
-              Mysore silk has been the pride of Karnataka since the reign of Maharaja Krishnaraja Wadiyar IV. 
-              The royal looms of Mysore created the world's most exquisite silk — a tradition our platform carries 
+              Mysore silk has been the pride of Karnataka since the reign of Maharaja Krishnaraja Wadiyar IV.
+              The royal looms of Mysore created the world's most exquisite silk — a tradition our platform carries
               forward by directly connecting you with master weavers.
             </p>
             <p className="font-inter text-muted-foreground text-base leading-relaxed mb-8">
-              Every thread tells a story. Every motif carries history. By purchasing from ಮೈಸೂರುಮಗ್ಗ, 
+              Every thread tells a story. Every motif carries history. By purchasing from ಮೈಸೂರುಮಗ್ಗ,
               you support over 500 artisan families in 25+ villages across Karnataka.
             </p>
 
-            {/* Trust features */}
             <div className="grid grid-cols-2 gap-4 mb-8">
               {[
                 { icon: Shield, text: "100% Authenticated Silk" },
@@ -117,15 +113,8 @@ const ArtisanSpotlight = () => {
               className="glass-gold rounded-2xl p-6 hover:shadow-gold transition-all duration-500 group"
             >
               <div className="flex items-start gap-4 mb-4">
-                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gold/40 shrink-0 img-zoom">
-                  <img
-                    src={artisan.image}
-                    alt={artisan.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop";
-                    }}
-                  />
+                <div className="w-16 h-16 rounded-full bg-gold/20 border-2 border-gold/40 shrink-0 flex items-center justify-center">
+                  <Scissors size={28} className="text-gold" />
                 </div>
                 <div>
                   <h3 className="font-playfair text-gold font-semibold text-lg">{artisan.name}</h3>
@@ -167,12 +156,12 @@ const ArtisanSpotlight = () => {
 
 const CategorySection = () => {
   const categories = [
-    { name: "Traditional Mysore Silk", count: 18, img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=500&fit=crop", path: "/shop?category=Traditional+Mysore+Silk" },
-    { name: "Bridal Silk", count: 16, img: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=400&h=500&fit=crop", path: "/shop?category=Bridal+Silk" },
-    { name: "Temple Border", count: 14, img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=400&h=500&fit=crop", path: "/shop?category=Temple+Border+Silk" },
-    { name: "Premium Gold Zari", count: 16, img: "https://images.unsplash.com/photo-1593030103066-0093718efeb9?w=400&h=500&fit=crop", path: "/shop?category=Premium+Gold+Zari+Silk" },
-    { name: "Soft Silk", count: 16, img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&h=500&fit=crop", path: "/shop?category=Soft+Silk" },
-    { name: "Designer Collection", count: 20, img: "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=400&h=500&fit=crop", path: "/shop?category=Designer+Collection" },
+    { name: "Traditional Mysore Silk", count: 18, img: "/sarees/s1.jpg", path: "/shop?category=Traditional+Mysore+Silk" },
+    { name: "Bridal Silk", count: 16, img: "/sarees/s19.jpg", path: "/shop?category=Bridal+Silk" },
+    { name: "Temple Border", count: 14, img: "/sarees/s51.jpg", path: "/shop?category=Temple+Border+Silk" },
+    { name: "Premium Gold Zari", count: 16, img: "/sarees/s65.jpg", path: "/shop?category=Premium+Gold+Zari+Silk" },
+    { name: "Soft Silk", count: 16, img: "/sarees/s35.jpg", path: "/shop?category=Soft+Silk" },
+    { name: "Designer Collection", count: 20, img: "/sarees/s81.jpg", path: "/shop?category=Designer+Collection" },
   ];
 
   return (
@@ -208,9 +197,6 @@ const CategorySection = () => {
                   src={cat.img}
                   alt={cat.name}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=500&fit=crop";
-                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-maroon/85 via-maroon/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-5">

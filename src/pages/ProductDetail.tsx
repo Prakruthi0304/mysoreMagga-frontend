@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingCart, ArrowLeft, MapPin, Phone, Mail, Star, Shield, Truck } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Phone, Mail, Star, Shield, Truck, Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { sarees, artisans } from "@/data/sarees";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
+  const { isLoggedIn, toggleWishlist, isInWishlist } = useAuth();
+  const navigate = useNavigate();
   const saree = sarees.find((s) => s.id === id);
   const [imgError, setImgError] = useState(false);
 
@@ -24,11 +27,35 @@ const ProductDetail = () => {
   );
 
   const artisan = artisans.find((a) => a.id === saree.artisanId);
+  const wishlisted = isInWishlist(saree.id);
 
   const handleAddToCart = () => {
     if (!saree.inStock) return;
     addToCart(saree);
     toast.success(`${saree.name} added to cart`);
+  };
+
+  const handleBuyNow = () => {
+    if (!saree.inStock) return;
+    if (!isLoggedIn) {
+      toast.error("Please sign in to buy");
+      return;
+    }
+    addToCart(saree);
+    navigate("/checkout");
+  };
+
+  const handleWishlist = async () => {
+    if (!isLoggedIn) {
+      toast.error("Please sign in to add to wishlist");
+      return;
+    }
+    try {
+      await toggleWishlist(saree.id);
+      toast.success(wishlisted ? "Removed from wishlist" : "Added to wishlist ❤️");
+    } catch {
+      toast.error("Failed to update wishlist");
+    }
   };
 
   return (
@@ -43,13 +70,22 @@ const ProductDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
             {/* Image */}
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-              <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-luxury img-zoom">
+              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-luxury img-zoom">
                 <img
-                  src={imgError ? "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&h=800&fit=crop" : saree.image}
+                  src={imgError ? "/sarees/s1.jpg" : saree.image}
                   alt={saree.name}
                   className="w-full h-full object-cover"
                   onError={() => setImgError(true)}
                 />
+                {/* Wishlist button on image */}
+                <button
+                  onClick={handleWishlist}
+                  className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                    wishlisted ? "bg-red-500 text-white" : "bg-white/80 text-muted-foreground hover:bg-red-50 hover:text-red-500"
+                  }`}
+                >
+                  <Heart size={18} className={wishlisted ? "fill-white" : ""} />
+                </button>
               </div>
             </motion.div>
 
@@ -97,9 +133,6 @@ const ProductDetail = () => {
               {artisan && (
                 <div className="bg-white rounded-2xl p-5 shadow-card mb-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gold/30">
-                      <img src={artisan.image} alt={artisan.name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"; }} />
-                    </div>
                     <div>
                       <p className="font-playfair font-semibold text-maroon">{artisan.name}</p>
                       <p className="font-inter text-xs text-muted-foreground">{artisan.village} · {artisan.experience} years experience</p>
@@ -130,10 +163,21 @@ const ProductDetail = () => {
                   {saree.inStock ? "Add to Cart" : "Out of Stock"}
                 </button>
                 {saree.inStock && (
-                  <button className="flex-1 py-4 border-2 border-maroon text-maroon font-inter font-semibold rounded-full hover:bg-maroon hover:text-gold transition-all duration-300">
+                  <button
+                    onClick={handleBuyNow}
+                    className="flex-1 py-4 border-2 border-maroon text-maroon font-inter font-semibold rounded-full hover:bg-maroon hover:text-gold transition-all duration-300"
+                  >
                     Buy Now
                   </button>
                 )}
+                <button
+                  onClick={handleWishlist}
+                  className={`w-14 h-14 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                    wishlisted ? "border-red-500 bg-red-50 text-red-500" : "border-border text-muted-foreground hover:border-red-400 hover:text-red-400"
+                  }`}
+                >
+                  <Heart size={20} className={wishlisted ? "fill-red-500" : ""} />
+                </button>
               </div>
 
               {/* Trust */}

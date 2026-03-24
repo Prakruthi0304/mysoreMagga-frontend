@@ -31,7 +31,7 @@ const WeaverMarket = () => {
     setOrdering(true);
     try {
       const token = localStorage.getItem("silk_token");
-      const res = await fetch(`${API}/dashboard/bulk-order`, {
+      const res = await fetch(`${API}/bulk-orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({

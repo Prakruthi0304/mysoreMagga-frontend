@@ -1,12 +1,24 @@
 import { useCart } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 const Cart = () => {
   const { cart, cartTotal, removeFromCart, updateQuantity } = useCart();
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (!isLoggedIn) {
+      toast.error("Please sign in to proceed to checkout");
+      return;
+    }
+    navigate("/checkout");
+  };
 
   if (cart.length === 0) return (
     <div className="min-h-screen bg-silk">
@@ -32,7 +44,8 @@ const Cart = () => {
               <motion.div key={item.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
                 className="bg-white rounded-2xl p-5 shadow-card flex gap-5">
                 <div className="w-24 h-28 rounded-xl overflow-hidden shrink-0">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200&h=250&fit=crop"; }} />
+                  <img src={item.image} alt={item.name} className="w-full h-full object-cover"
+                    onError={(e) => { (e.target as HTMLImageElement).src = "/sarees/s1.jpg"; }} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-playfair font-semibold text-maroon">{item.name}</h3>
@@ -64,7 +77,9 @@ const Cart = () => {
               <span>Total</span>
               <span>₹{cartTotal.toLocaleString("en-IN")}</span>
             </div>
-            <button className="w-full py-4 bg-maroon text-gold font-inter font-semibold rounded-full hover:bg-gold hover:text-maroon transition-all shine shadow-gold">
+            <button
+              onClick={handleCheckout}
+              className="w-full py-4 bg-maroon text-gold font-inter font-semibold rounded-full hover:bg-gold hover:text-maroon transition-all shine shadow-gold">
               Proceed to Checkout
             </button>
             <Link to="/shop" className="block text-center mt-4 font-inter text-sm text-muted-foreground hover:text-gold transition-colors">Continue Shopping</Link>

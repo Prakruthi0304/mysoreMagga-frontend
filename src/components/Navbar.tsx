@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, User, Search, Menu, X, Heart, LayoutDashboard } from "lucide-react";
+import { ShoppingCart, User, Search, Menu, X, Heart, LayoutDashboard, Home } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import AuthModal from "@/components/AuthModal";
 
 const Navbar = () => {
@@ -13,6 +14,7 @@ const Navbar = () => {
   const location = useLocation();
   const { cartCount } = useCart();
   const { isLoggedIn, user, logout } = useAuth();
+  const { language, toggleLanguage, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -21,12 +23,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { label: "Shop", path: "/shop" },
-    { label: "Bridal", path: "/shop?category=Bridal+Silk" },
-    { label: "Weaver Market", path: "/weaver-market" },
-    { label: "Artisans", path: "/artisans" },
-    { label: "Learning", path: "/learning" },
-    { label: "Pre-Loved", path: "/preloved" },
+    { label: t("nav.shop"), path: "/shop" },
+    { label: t("nav.bridal"), path: "/shop?category=Bridal+Silk" },
+    { label: t("nav.weaverMarket"), path: "/weaver-market" },
+    { label: t("nav.artisans"), path: "/artisans" },
+    { label: t("nav.learning"), path: "/learning" },
+    { label: t("nav.preloved"), path: "/preloved" },
   ];
 
   const isHome = location.pathname === "/";
@@ -61,7 +63,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
                 <Link
-                  key={link.label}
+                  key={link.path}
                   to={link.path}
                   className={`font-inter text-sm font-medium tracking-wide gold-underline transition-colors duration-300 ${
                     scrolled || !isHome
@@ -74,17 +76,43 @@ const Navbar = () => {
               ))}
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+
+              {/* Home Icon */}
+              <Link to="/" className={`p-2 rounded-full transition-colors duration-300 hover:bg-gold/10 ${
+                scrolled || !isHome ? "text-foreground" : "text-white"
+              }`}>
+                <Home size={18} />
+              </Link>
+
+              {/* Language Toggle */}
+              <button
+                onClick={toggleLanguage}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold font-inter border-2 transition-all duration-300 ${
+                  scrolled || !isHome
+                    ? "border-maroon text-maroon hover:bg-maroon hover:text-gold"
+                    : "border-gold text-gold hover:bg-gold hover:text-maroon"
+                }`}
+                title={language === "en" ? "Switch to Kannada" : "Switch to English"}
+              >
+                {language === "en" ? "ಕನ್ನಡ" : "EN"}
+              </button>
+
               <button className={`p-2 rounded-full transition-colors duration-300 hover:bg-gold/10 ${
                 scrolled || !isHome ? "text-foreground" : "text-white"
               }`}>
                 <Search size={18} />
               </button>
-              <button className={`p-2 rounded-full transition-colors duration-300 hover:bg-gold/10 ${
+              <Link to="/shop" className={`relative p-2 rounded-full transition-colors duration-300 hover:bg-gold/10 ${
                 scrolled || !isHome ? "text-foreground" : "text-white"
               }`}>
                 <Heart size={18} />
-              </button>
+                {user?.wishlist && user.wishlist.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {user.wishlist.length}
+                  </span>
+                )}
+              </Link>
               <Link to="/cart" className={`relative p-2 rounded-full transition-colors duration-300 hover:bg-gold/10 ${
                 scrolled || !isHome ? "text-foreground" : "text-white"
               }`}>
@@ -113,7 +141,7 @@ const Navbar = () => {
                         ? "text-muted-foreground hover:text-maroon"
                         : "text-white/70 hover:text-white"
                     }`}>
-                    Sign Out
+                    {t("nav.signOut")}
                   </button>
                 </div>
               ) : (
@@ -124,7 +152,7 @@ const Navbar = () => {
                       : "glass text-white hover:bg-white/20"
                   }`}>
                   <User size={14} />
-                  Sign In
+                  {t("nav.signIn")}
                 </button>
               )}
 
@@ -148,7 +176,7 @@ const Navbar = () => {
             className="fixed inset-0 z-40 bg-maroon pt-20">
             <div className="flex flex-col p-8 gap-6">
               {navLinks.map((link, i) => (
-                <motion.div key={link.label}
+                <motion.div key={link.path}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.08 }}>
@@ -159,21 +187,26 @@ const Navbar = () => {
                 </motion.div>
               ))}
               <div className="divider-gold my-2 w-24" />
+              <button
+                onClick={toggleLanguage}
+                className="font-inter text-white/80 text-lg text-left">
+                {language === "en" ? "🇮🇳 ಕನ್ನಡದಲ್ಲಿ ನೋಡಿ" : "🇬🇧 View in English"}
+              </button>
               {isLoggedIn ? (
                 <>
                   <Link to="/dashboard" onClick={() => setMobileOpen(false)}
                     className="font-inter text-white/80 text-lg flex items-center gap-2">
-                    <LayoutDashboard size={18} /> My Dashboard
+                    <LayoutDashboard size={18} /> {t("nav.dashboard")}
                   </Link>
                   <button onClick={() => { logout(); setMobileOpen(false); }}
                     className="font-inter text-white/50 text-base text-left">
-                    Sign Out ({user?.name})
+                    {t("nav.signOut")} ({user?.name})
                   </button>
                 </>
               ) : (
                 <button onClick={() => { setAuthOpen(true); setMobileOpen(false); }}
                   className="font-inter text-white/80 text-lg text-left">
-                  Sign In / Register
+                  {t("nav.signIn")} / Register
                 </button>
               )}
             </div>
